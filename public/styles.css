@@ -472,6 +472,22 @@ a {
     color: var(--color-text-muted);
 }
 
+.deploy-badge {
+    display: inline-block;
+    margin-top: var(--spacing-md);
+    opacity: 0.5;
+    transition: var(--transition-base);
+}
+
+.deploy-badge:hover {
+    opacity: 1;
+}
+
+.deploy-badge img {
+    display: block;
+    height: 20px;
+}
+
 /* ===================================
    Responsive
    =================================== */
