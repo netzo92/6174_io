@@ -67,6 +67,9 @@ def add_contact_info(doc, contact_data):
     """Add contact info as a single line with separators."""
     if not contact_data:
         return
+    
+    # Check if full address should be shown
+    show_full_address = os.environ.get("RESUME_FULL_ADDRESS", "").lower() in ("true", "1", "yes")
         
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -77,14 +80,20 @@ def add_contact_info(doc, contact_data):
         # If details is a string, just use it
         parts.append(contact_data["details"])
     
-    # If address fits on one line, add it
-    addr = []
-    if "address_line1" in contact_data: addr.append(contact_data["address_line1"])
-    if "address_line2" in contact_data: addr.append(contact_data["address_line2"])
-    if addr:
-        parts.insert(0, ", ".join(addr))
+    # Address handling based on env var
+    if show_full_address:
+        # Full address mode
+        addr = []
+        if "address_line1" in contact_data: addr.append(contact_data["address_line1"])
+        if "address_line2" in contact_data: addr.append(contact_data["address_line2"])
+        if addr:
+            parts.insert(0, ", ".join(addr))
+    else:
+        # Redacted mode - only show state
+        if "address_state" in contact_data:
+            parts.insert(0, contact_data["address_state"])
         
-    # Join with bullets
+    # Join with separators
     full_text = " | ".join(parts)
     run = p.add_run(full_text)
     run.font.size = Pt(10)
