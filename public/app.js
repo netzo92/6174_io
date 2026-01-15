@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMMOChatPopup();
     initScrollTraversal();
     initProjectsModal();
+    initProjectNameAnimation();
 });
 
 /**
@@ -751,4 +752,43 @@ function initProjectsModal() {
             closeModal();
         }
     });
+}
+
+/**
+ * Project Name Animation (Verify both URLs)
+ */
+function initProjectNameAnimation() {
+    const projectElement = document.getElementById('zcash-project-name');
+    if (!projectElement) return;
+
+    const names = ['zecprice.now', 'zcashprice.now'];
+    let currentIndex = 0;
+
+    setInterval(() => {
+        // Start transition
+        projectElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        projectElement.style.opacity = '0';
+        projectElement.style.transform = 'translateY(-5px)';
+
+        setTimeout(() => {
+            // Swap text
+            currentIndex = (currentIndex + 1) % names.length;
+            projectElement.textContent = names[currentIndex];
+
+            // Add verify icon briefly
+            const originalColor = projectElement.style.color;
+            projectElement.style.color = '#4d9a47'; // Success green
+
+            // Fade in
+            projectElement.style.opacity = '1';
+            projectElement.style.transform = 'translateY(0)';
+
+            // Reset color after a moment
+            setTimeout(() => {
+                projectElement.style.color = originalColor;
+            }, 1000);
+
+        }, 300);
+
+    }, 4000); // Switch every 4 seconds
 }
