@@ -151,7 +151,7 @@ function initTimeOfDayBackground() {
 }
 
 /**
- * Top-Down 2D RPG Style Grass Effect
+ * Top-Down 2D RPG Style Grass Effect with Insects
  */
 function initWavyCracks() {
     const canvas = document.createElement('canvas');
@@ -169,13 +169,47 @@ function initWavyCracks() {
 
     const ctx = canvas.getContext('2d');
     let grassTufts = [];
+    let insects = [];
     let time = 0;
     const TILE_SIZE = 32;
+
+    // Insect types with their visual properties
+    const INSECT_TYPES = {
+        ladybug: {
+            color: '#cc3333',
+            size: 4,
+            speed: 0.3,
+            wingColor: '#222',
+            glow: false
+        },
+        grasshopper: {
+            color: '#5a8a40',
+            size: 5,
+            speed: 0.6,
+            wingColor: '#7aaa60',
+            glow: false
+        },
+        firefly: {
+            color: '#ffee88',
+            size: 3,
+            speed: 0.2,
+            wingColor: '#ffcc44',
+            glow: true
+        },
+        bee: {
+            color: '#ffcc00',
+            size: 4,
+            speed: 0.5,
+            wingColor: '#333',
+            glow: false
+        }
+    };
 
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         generateGrassTufts();
+        generateInsects();
     }
 
     function generateGrassTufts() {
@@ -185,7 +219,6 @@ function initWavyCracks() {
 
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
-                // Add 1-3 grass tufts per tile with some randomness
                 const numTufts = Math.floor(Math.random() * 3) + 1;
                 for (let t = 0; t < numTufts; t++) {
                     grassTufts.push({
@@ -202,17 +235,137 @@ function initWavyCracks() {
         }
     }
 
+    function generateInsects() {
+        insects = [];
+        const types = Object.keys(INSECT_TYPES);
+
+        // Create 1-2 of each type
+        types.forEach(type => {
+            const count = Math.floor(Math.random() * 2) + 1;
+            for (let i = 0; i < count; i++) {
+                const startTuft = grassTufts[Math.floor(Math.random() * grassTufts.length)];
+                const targetTuft = grassTufts[Math.floor(Math.random() * grassTufts.length)];
+
+                insects.push({
+                    type: type,
+                    x: startTuft ? startTuft.x : Math.random() * canvas.width,
+                    y: startTuft ? startTuft.y : Math.random() * canvas.height,
+                    targetX: targetTuft ? targetTuft.x : Math.random() * canvas.width,
+                    targetY: targetTuft ? targetTuft.y : Math.random() * canvas.height,
+                    progress: 0,
+                    restTime: 0,
+                    wobble: Math.random() * Math.PI * 2,
+                    glowPhase: Math.random() * Math.PI * 2
+                });
+            }
+        });
+    }
+
+    function updateInsect(insect) {
+        const props = INSECT_TYPES[insect.type];
+
+        // If resting, count down
+        if (insect.restTime > 0) {
+            insect.restTime -= 0.016;
+            return;
+        }
+
+        // Move toward target
+        insect.progress += props.speed * 0.01;
+        insect.wobble += 0.1;
+
+        if (insect.progress >= 1) {
+            // Arrived at target, pick new one
+            insect.x = insect.targetX;
+            insect.y = insect.targetY;
+            insect.progress = 0;
+            insect.restTime = 1 + Math.random() * 3; // Rest 1-4 seconds
+
+            // Pick new target
+            const newTarget = grassTufts[Math.floor(Math.random() * grassTufts.length)];
+            if (newTarget) {
+                insect.targetX = newTarget.x;
+                insect.targetY = newTarget.y;
+            }
+        }
+    }
+
+    function drawInsect(insect) {
+        const props = INSECT_TYPES[insect.type];
+
+        // Interpolate position with slight wobble
+        const wobbleX = Math.sin(insect.wobble) * 2;
+        const wobbleY = Math.cos(insect.wobble * 0.7) * 1.5;
+
+        const currentX = insect.x + (insect.targetX - insect.x) * insect.progress + wobbleX;
+        const currentY = insect.y + (insect.targetY - insect.y) * insect.progress + wobbleY;
+
+        // Glow effect for fireflies
+        if (props.glow) {
+            const glowIntensity = 0.3 + Math.sin(time * 2 + insect.glowPhase) * 0.3;
+            const gradient = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, props.size * 4);
+            gradient.addColorStop(0, `rgba(255, 238, 136, ${glowIntensity})`);
+            gradient.addColorStop(1, 'rgba(255, 238, 136, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(currentX, currentY, props.size * 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.beginPath();
+        ctx.ellipse(currentX + 1, currentY + 2, props.size * 0.8, props.size * 0.4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Body
+        ctx.fillStyle = props.color;
+        ctx.beginPath();
+        ctx.arc(currentX, currentY, props.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Wing/detail based on type
+        if (insect.type === 'ladybug') {
+            // Black spots
+            ctx.fillStyle = props.wingColor;
+            ctx.beginPath();
+            ctx.arc(currentX - 1.5, currentY - 1, 1, 0, Math.PI * 2);
+            ctx.arc(currentX + 1.5, currentY - 1, 1, 0, Math.PI * 2);
+            ctx.arc(currentX, currentY + 1, 1, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (insect.type === 'bee') {
+            // Stripes
+            ctx.strokeStyle = props.wingColor;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(currentX - props.size, currentY);
+            ctx.lineTo(currentX + props.size, currentY);
+            ctx.moveTo(currentX - props.size * 0.5, currentY - 1.5);
+            ctx.lineTo(currentX + props.size * 0.5, currentY - 1.5);
+            ctx.stroke();
+        } else if (insect.type === 'grasshopper') {
+            // Legs
+            ctx.strokeStyle = props.wingColor;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(currentX, currentY);
+            ctx.lineTo(currentX - 4, currentY + 3);
+            ctx.moveTo(currentX, currentY);
+            ctx.lineTo(currentX + 4, currentY + 3);
+            ctx.stroke();
+        }
+    }
+
     function getGrassColors(variant) {
         const palettes = [
-            { dark: '#2d5a27', mid: '#3d7a37', light: '#4d9a47' },  // Forest green
-            { dark: '#2a6b2a', mid: '#3a8b3a', light: '#5aab5a' },  // Bright green
-            { dark: '#3a6a30', mid: '#4a8a40', light: '#6aaa60' },  // Lime green
-            { dark: '#286028', mid: '#388038', light: '#58a058' },  // Deep green
+            { dark: '#2d5a27', mid: '#3d7a37', light: '#4d9a47' },
+            { dark: '#2a6b2a', mid: '#3a8b3a', light: '#5aab5a' },
+            { dark: '#3a6a30', mid: '#4a8a40', light: '#6aaa60' },
+            { dark: '#286028', mid: '#388038', light: '#58a058' },
         ];
         return palettes[variant % palettes.length];
     }
 
-    // Draw a single top-down grass tuft (like Pokemon/Zelda style)
     function drawGrassTuft(tuft) {
         const { x, y, size, blades, phase, speed, colorVariant } = tuft;
         const colors = getGrassColors(colorVariant);
@@ -223,7 +376,6 @@ function initWavyCracks() {
             const bladeLength = size * (0.7 + Math.random() * 0.3);
             const bladeSway = sway * (i % 2 === 0 ? 1 : -1);
 
-            // Draw blade shadow
             ctx.beginPath();
             ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
             ctx.lineWidth = 3;
@@ -235,7 +387,6 @@ function initWavyCracks() {
             );
             ctx.stroke();
 
-            // Draw dark base of blade
             ctx.beginPath();
             ctx.strokeStyle = colors.dark;
             ctx.lineWidth = 3;
@@ -246,7 +397,6 @@ function initWavyCracks() {
             );
             ctx.stroke();
 
-            // Draw mid section
             ctx.beginPath();
             ctx.strokeStyle = colors.mid;
             ctx.lineWidth = 2;
@@ -260,7 +410,6 @@ function initWavyCracks() {
             );
             ctx.stroke();
 
-            // Draw light tip
             ctx.beginPath();
             ctx.strokeStyle = colors.light;
             ctx.lineWidth = 1.5;
@@ -279,7 +428,15 @@ function initWavyCracks() {
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         time += 0.008;
+
+        // Draw grass first
         grassTufts.forEach(tuft => drawGrassTuft(tuft));
+
+        // Update and draw insects on top
+        insects.forEach(insect => {
+            updateInsect(insect);
+            drawInsect(insect);
+        });
     }
 
     function animate() {
