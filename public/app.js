@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initScrollEffects();
     initAnimations();
+    initTimeOfDayBackground();
     initWavyCracks();
     initGitHubStats();
     initTimeDisplay();
@@ -37,6 +38,149 @@ function initGitHubStats() {
             });
         });
     });
+}
+
+/**
+ * Time of Day Background - Changes based on Santa Barbara (Pacific) time
+ */
+function initTimeOfDayBackground() {
+    function getTimeOfDayColors() {
+        // Get current hour in Santa Barbara (Pacific Time)
+        const now = new Date();
+        const sbTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+        const hour = sbTime.getHours();
+        const minute = sbTime.getMinutes();
+        const timeValue = hour + minute / 60;
+
+        // Define time periods and their colors
+        // Dawn: 5:00 - 7:00
+        // Morning: 7:00 - 10:00
+        // Midday: 10:00 - 16:00
+        // Afternoon: 16:00 - 18:00
+        // Sunset: 18:00 - 20:00
+        // Dusk: 20:00 - 21:00
+        // Night: 21:00 - 5:00
+
+        let bgPrimary, bgSecondary, skyGradient, grassTint;
+
+        if (timeValue >= 5 && timeValue < 7) {
+            // Dawn - soft pink/orange glow
+            const t = (timeValue - 5) / 2;
+            bgPrimary = lerpColor('#0f0a1a', '#2a1f35', t);
+            bgSecondary = lerpColor('#15101f', '#3d2a4a', t);
+            skyGradient = `linear-gradient(180deg, 
+                ${lerpColor('#1a1025', '#4a3060', t)} 0%, 
+                ${lerpColor('#2d1530', '#ff9966', t)} 50%,
+                ${lerpColor('#401a35', '#ffcc80', t)} 100%)`;
+            grassTint = lerpColor('#1a2815', '#2a4020', t);
+        } else if (timeValue >= 7 && timeValue < 10) {
+            // Morning - warming up
+            const t = (timeValue - 7) / 3;
+            bgPrimary = lerpColor('#2a1f35', '#1a3045', t);
+            bgSecondary = lerpColor('#3d2a4a', '#254055', t);
+            skyGradient = `linear-gradient(180deg, 
+                ${lerpColor('#4a3060', '#87CEEB', t)} 0%, 
+                ${lerpColor('#ff9966', '#b4d7e8', t)} 50%,
+                ${lerpColor('#ffcc80', '#e8f4fc', t)} 100%)`;
+            grassTint = lerpColor('#2a4020', '#3a5a30', t);
+        } else if (timeValue >= 10 && timeValue < 16) {
+            // Midday - bright and vibrant
+            const t = (timeValue - 10) / 6;
+            bgPrimary = '#1a3550';
+            bgSecondary = '#254560';
+            skyGradient = `linear-gradient(180deg, 
+                #4a90c2 0%, 
+                #87CEEB 30%,
+                #b4e4fc 60%,
+                #e8f8ff 100%)`;
+            grassTint = '#4a7a40';
+        } else if (timeValue >= 16 && timeValue < 18) {
+            // Afternoon - golden hour starting
+            const t = (timeValue - 16) / 2;
+            bgPrimary = lerpColor('#1a3550', '#2d2a40', t);
+            bgSecondary = lerpColor('#254560', '#3f354a', t);
+            skyGradient = `linear-gradient(180deg, 
+                ${lerpColor('#4a90c2', '#6b7aa0', t)} 0%, 
+                ${lerpColor('#87CEEB', '#f0a060', t)} 50%,
+                ${lerpColor('#e8f8ff', '#ffcc66', t)} 100%)`;
+            grassTint = lerpColor('#4a7a40', '#4a6a35', t);
+        } else if (timeValue >= 18 && timeValue < 20) {
+            // Sunset - dramatic oranges and purples
+            const t = (timeValue - 18) / 2;
+            bgPrimary = lerpColor('#2d2a40', '#201530', t);
+            bgSecondary = lerpColor('#3f354a', '#2a1a3a', t);
+            skyGradient = `linear-gradient(180deg, 
+                ${lerpColor('#6b7aa0', '#2d1f50', t)} 0%, 
+                ${lerpColor('#f0a060', '#cc4499', t)} 35%,
+                ${lerpColor('#ffcc66', '#ff6633', t)} 60%,
+                ${lerpColor('#ffcc66', '#ffaa44', t)} 100%)`;
+            grassTint = lerpColor('#4a6a35', '#354a2a', t);
+        } else if (timeValue >= 20 && timeValue < 21) {
+            // Dusk - transitioning to night
+            const t = (timeValue - 20);
+            bgPrimary = lerpColor('#201530', '#0a0a15', t);
+            bgSecondary = lerpColor('#2a1a3a', '#10101f', t);
+            skyGradient = `linear-gradient(180deg, 
+                ${lerpColor('#2d1f50', '#0a0a1a', t)} 0%, 
+                ${lerpColor('#cc4499', '#1a1030', t)} 50%,
+                ${lerpColor('#ff6633', '#2a1540', t)} 100%)`;
+            grassTint = lerpColor('#354a2a', '#1a2815', t);
+        } else {
+            // Night - deep blues and purples
+            bgPrimary = '#0a0a15';
+            bgSecondary = '#10101f';
+            skyGradient = `linear-gradient(180deg, 
+                #05050f 0%, 
+                #0a0a1a 50%,
+                #151525 100%)`;
+            grassTint = '#1a2815';
+        }
+
+        return { bgPrimary, bgSecondary, skyGradient, grassTint };
+    }
+
+    function lerpColor(color1, color2, t) {
+        const hex = (c) => parseInt(c, 16);
+        const r1 = hex(color1.slice(1, 3)), g1 = hex(color1.slice(3, 5)), b1 = hex(color1.slice(5, 7));
+        const r2 = hex(color2.slice(1, 3)), g2 = hex(color2.slice(3, 5)), b2 = hex(color2.slice(5, 7));
+        const r = Math.round(r1 + (r2 - r1) * t);
+        const g = Math.round(g1 + (g2 - g1) * t);
+        const b = Math.round(b1 + (b2 - b1) * t);
+        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+
+    function applyTimeOfDayBackground() {
+        const colors = getTimeOfDayColors();
+
+        // Apply background colors to the body
+        document.documentElement.style.setProperty('--color-bg-primary', colors.bgPrimary);
+        document.documentElement.style.setProperty('--color-bg-secondary', colors.bgSecondary);
+
+        // Create or update sky overlay
+        let skyOverlay = document.getElementById('sky-overlay');
+        if (!skyOverlay) {
+            skyOverlay = document.createElement('div');
+            skyOverlay.id = 'sky-overlay';
+            skyOverlay.style.cssText = `
+                position: fixed;
+                inset: 0;
+                z-index: -2;
+                pointer-events: none;
+                transition: background 60s linear;
+            `;
+            document.body.insertBefore(skyOverlay, document.body.firstChild);
+        }
+        skyOverlay.style.background = colors.skyGradient;
+
+        // Store grass tint for the grass effect to use
+        window.grassTint = colors.grassTint;
+    }
+
+    // Apply immediately
+    applyTimeOfDayBackground();
+
+    // Update every minute for smooth transitions
+    setInterval(applyTimeOfDayBackground, 60000);
 }
 
 /**
@@ -399,14 +543,14 @@ function initMMOChatPopup() {
     chatPopup.id = 'mmo-chat-popup';
     chatPopup.innerHTML = `
         <div class="chat-header">
-            <span class="chat-npc-name">📜 Quest Giver</span>
+            <span class="chat-npc-name">📄 Resume</span>
             <button class="chat-close">×</button>
         </div>
         <div class="chat-body">
-            <p class="chat-message">Greetings, traveler! I have a scroll containing the skills and experience of this adventurer. Would you like to take it with you?</p>
+            <p class="chat-message">Hello! Would you like to download a copy of my resume?</p>
             <div class="chat-actions">
-                <a href="resume.pdf" class="chat-btn chat-accept" download>Accept Quest 📥</a>
-                <button class="chat-btn chat-decline">Maybe Later</button>
+                <a href="resume.pdf" class="chat-btn chat-accept" download>Download Resume 📥</a>
+                <button class="chat-btn chat-decline">Not Now</button>
             </div>
         </div>
     `;
