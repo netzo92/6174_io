@@ -28,165 +28,133 @@ function initWavyCracks() {
     document.body.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
-    let animationId;
-    let cracks = [];
+    let grassBlades = [];
     let time = 0;
 
     // Resize handler
     function resize() {
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        generateCracks();
+        canvas.height = 200;
+        generateGrass();
     }
 
-    // Generate crack patterns
-    function generateCracks() {
-        cracks = [];
-        const numCracks = Math.floor(Math.random() * 4) + 3; // 3-6 cracks
+    // Generate grass blades
+    function generateGrass() {
+        grassBlades = [];
+        const bladeCount = Math.floor(canvas.width / 4);
 
-        for (let i = 0; i < numCracks; i++) {
-            const crack = {
-                points: [],
-                color: getRandomCrackColor(),
-                lineWidth: Math.random() * 2 + 1.5,
-                wobbleSpeed: Math.random() * 0.02 + 0.01,
-                wobbleAmount: Math.random() * 3 + 2
-            };
-
-            // Random starting position (edges or random spots)
-            let x, y;
-            const startEdge = Math.random();
-            if (startEdge < 0.25) {
-                x = 0; y = Math.random() * canvas.height;
-            } else if (startEdge < 0.5) {
-                x = canvas.width; y = Math.random() * canvas.height;
-            } else if (startEdge < 0.75) {
-                x = Math.random() * canvas.width; y = 0;
-            } else {
-                x = Math.random() * canvas.width; y = canvas.height;
-            }
-
-            // Generate wavy crack path
-            const segments = Math.floor(Math.random() * 8) + 5;
-            let angle = Math.random() * Math.PI * 2;
-
-            for (let j = 0; j < segments; j++) {
-                crack.points.push({
-                    x: x,
-                    y: y,
-                    baseX: x,
-                    baseY: y,
-                    phase: Math.random() * Math.PI * 2
-                });
-
-                // Wavy direction changes
-                angle += (Math.random() - 0.5) * 1.2;
-                const length = Math.random() * 80 + 40;
-                x += Math.cos(angle) * length;
-                y += Math.sin(angle) * length;
-
-                // Add random branches
-                if (Math.random() < 0.3 && j > 1) {
-                    const branch = {
-                        points: [],
-                        color: crack.color,
-                        lineWidth: crack.lineWidth * 0.6,
-                        wobbleSpeed: crack.wobbleSpeed * 1.2,
-                        wobbleAmount: crack.wobbleAmount * 0.8
-                    };
-
-                    let bx = crack.points[crack.points.length - 1].baseX;
-                    let by = crack.points[crack.points.length - 1].baseY;
-                    let bAngle = angle + (Math.random() - 0.5) * Math.PI;
-
-                    for (let k = 0; k < 3; k++) {
-                        branch.points.push({
-                            x: bx, y: by, baseX: bx, baseY: by,
-                            phase: Math.random() * Math.PI * 2
-                        });
-                        const bLen = Math.random() * 40 + 20;
-                        bAngle += (Math.random() - 0.5) * 0.8;
-                        bx += Math.cos(bAngle) * bLen;
-                        by += Math.sin(bAngle) * bLen;
-                    }
-                    cracks.push(branch);
-                }
-            }
-            cracks.push(crack);
+        for (let i = 0; i < bladeCount; i++) {
+            grassBlades.push({
+                x: (i / bladeCount) * canvas.width + (Math.random() - 0.5) * 8,
+                height: Math.random() * 60 + 40,
+                width: Math.random() * 4 + 2,
+                curve: Math.random() * 0.3 + 0.1,
+                speed: Math.random() * 1.5 + 0.5,
+                phase: Math.random() * Math.PI * 2,
+                color: getGrassColor(),
+                layer: Math.floor(Math.random() * 3)
+            });
         }
+        grassBlades.sort((a, b) => a.layer - b.layer);
     }
 
-    function getRandomCrackColor() {
+    function getGrassColor() {
         const colors = [
-            'rgba(147, 112, 219, 0.4)',  // Purple
-            'rgba(100, 149, 237, 0.4)',  // Cornflower blue
-            'rgba(72, 209, 204, 0.4)',   // Turquoise
-            'rgba(255, 182, 193, 0.35)', // Pink
-            'rgba(144, 238, 144, 0.35)', // Light green
+            { h: 120, s: 80, l: 55 },
+            { h: 130, s: 75, l: 60 },
+            { h: 110, s: 85, l: 65 },
+            { h: 125, s: 90, l: 70 },
+            { h: 100, s: 90, l: 75 },
+            { h: 115, s: 95, l: 80 },
+            { h: 90, s: 85, l: 65 },
+            { h: 80, s: 90, l: 70 },
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     }
 
-    // Draw cartoon-style wavy cracks
-    function drawCracks() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        time += 0.016;
+    function drawBlade(blade, windOffset) {
+        const { x, height, width, curve, color, layer } = blade;
+        const baseY = canvas.height;
+        const sway = Math.sin(time * blade.speed + blade.phase) * (15 + layer * 5) + windOffset;
+        const opacity = 0.9 + layer * 0.05;
 
-        cracks.forEach(crack => {
-            if (crack.points.length < 2) return;
+        ctx.beginPath();
+        ctx.strokeStyle = `hsla(${color.h}, ${color.s}%, ${color.l}%, ${opacity})`;
+        ctx.lineWidth = width;
+        ctx.lineCap = 'round';
+        ctx.moveTo(x, baseY);
 
-            // Update wobble positions
-            crack.points.forEach(point => {
-                const wobble = Math.sin(time * crack.wobbleSpeed * 60 + point.phase);
-                point.x = point.baseX + wobble * crack.wobbleAmount;
-                point.y = point.baseY + wobble * crack.wobbleAmount * 0.5;
-            });
+        const cpX = x + sway * curve * 2;
+        const cpY = baseY - height * 0.6;
+        const endX = x + sway;
+        const endY = baseY - height;
 
-            // Draw main crack line with cartoon style
+        ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+        ctx.stroke();
+
+        if (layer === 2 && Math.random() > 0.7) {
             ctx.beginPath();
-            ctx.strokeStyle = crack.color;
-            ctx.lineWidth = crack.lineWidth;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+            ctx.strokeStyle = `hsla(${color.h}, ${color.s}%, ${color.l + 20}%, 0.3)`;
+            ctx.lineWidth = width * 0.5;
+            ctx.moveTo(x + 1, baseY - height * 0.3);
+            ctx.quadraticCurveTo(cpX + 1, cpY, endX + 1, endY);
+            ctx.stroke();
+        }
+    }
 
-            // Smooth curve through points
-            ctx.moveTo(crack.points[0].x, crack.points[0].y);
+    function drawGrass() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        time += 0.02;
+        const globalWind = Math.sin(time * 0.5) * 5;
 
-            for (let i = 1; i < crack.points.length - 1; i++) {
-                const xc = (crack.points[i].x + crack.points[i + 1].x) / 2;
-                const yc = (crack.points[i].y + crack.points[i + 1].y) / 2;
-                ctx.quadraticCurveTo(crack.points[i].x, crack.points[i].y, xc, yc);
-            }
+        const groundGradient = ctx.createLinearGradient(0, canvas.height - 30, 0, canvas.height);
+        groundGradient.addColorStop(0, 'rgba(60, 140, 60, 0.95)');
+        groundGradient.addColorStop(1, 'rgba(45, 100, 45, 1)');
+        ctx.fillStyle = groundGradient;
+        ctx.fillRect(0, canvas.height - 25, canvas.width, 25);
 
-            if (crack.points.length > 1) {
-                const last = crack.points[crack.points.length - 1];
-                ctx.lineTo(last.x, last.y);
-            }
+        grassBlades.forEach(blade => drawBlade(blade, globalWind));
+        drawFlowers();
+    }
 
+    function drawFlowers() {
+        const flowerPositions = [
+            { x: canvas.width * 0.15, y: canvas.height - 70 },
+            { x: canvas.width * 0.4, y: canvas.height - 85 },
+            { x: canvas.width * 0.65, y: canvas.height - 65 },
+            { x: canvas.width * 0.85, y: canvas.height - 80 },
+        ];
+        const sway = Math.sin(time * 0.8) * 3;
+        const flowerColors = ['#FFB6C1', '#FFD700', '#87CEEB', '#DDA0DD'];
+
+        flowerPositions.forEach((pos, i) => {
+            ctx.beginPath();
+            ctx.strokeStyle = '#228B22';
+            ctx.lineWidth = 2;
+            ctx.moveTo(pos.x, canvas.height - 20);
+            ctx.quadraticCurveTo(pos.x + sway, pos.y + 20, pos.x + sway * 1.5, pos.y);
             ctx.stroke();
 
-            // Draw cartoony outline effect
-            ctx.strokeStyle = crack.color.replace('0.4', '0.15').replace('0.35', '0.1');
-            ctx.lineWidth = crack.lineWidth + 3;
-            ctx.stroke();
+            ctx.beginPath();
+            ctx.fillStyle = flowerColors[i % flowerColors.length];
+            ctx.arc(pos.x + sway * 1.5, pos.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.fillStyle = '#FFD700';
+            ctx.arc(pos.x + sway * 1.5, pos.y, 3, 0, Math.PI * 2);
+            ctx.fill();
         });
     }
 
-    // Animation loop
     function animate() {
-        drawCracks();
-        animationId = requestAnimationFrame(animate);
+        drawGrass();
+        requestAnimationFrame(animate);
     }
 
-    // Initialize
     window.addEventListener('resize', resize);
     resize();
     animate();
-
-    // Regenerate cracks occasionally for variety
-    setInterval(() => {
-        generateCracks();
-    }, 15000);
 }
 
 /**
