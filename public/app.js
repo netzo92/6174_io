@@ -10,23 +10,22 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Wavy Cartoony Cracks Effect
+ * Wavy Cartoony Grass Effect
  */
 function initWavyCracks() {
     // Create canvas overlay
     const canvas = document.createElement('canvas');
-    canvas.id = 'wavy-cracks';
+    canvas.id = 'wavy-grass';
     canvas.style.cssText = `
         position: fixed;
-        top: 0;
+        bottom: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: 200px;
         pointer-events: none;
         z-index: 1;
-        opacity: 0.6;
     `;
-    document.body.insertBefore(canvas, document.body.firstChild);
+    document.body.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
     let animationId;
