@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTimeDisplay();
     initMMOChatPopup();
     initScrollTraversal();
+    initProjectsModal();
 });
 
 /**
@@ -710,3 +711,44 @@ function initScrollTraversal() {
 document.querySelector('a[download]')?.addEventListener('click', () => {
     console.log('Resume downloaded');
 });
+
+/**
+ * Projects Modal Functionality
+ */
+function initProjectsModal() {
+    const modal = document.getElementById('projects-modal');
+    const trigger = document.getElementById('projects-trigger');
+    const closeBtn = modal?.querySelector('.modal-close');
+
+    if (!modal || !trigger) return;
+
+    // Open modal
+    trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+
+    // Close modal function
+    const closeModal = () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    // Close on button click
+    closeBtn?.addEventListener('click', closeModal);
+
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+}

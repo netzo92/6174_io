@@ -76,8 +76,8 @@
                 </div>
             </a>
 
-            <!-- Projects -->
-            <a href="https://zcashprice.now" class="link-card" target="_blank" rel="noopener">
+            <!-- Projects Trigger -->
+            <div id="projects-trigger" class="link-card" role="button" tabindex="0">
                 <div class="link-icon projects">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path
@@ -86,14 +86,14 @@
                 </div>
                 <div class="link-content">
                     <span class="link-title">Projects</span>
-                    <span class="link-subtitle">zcashprice.now</span>
+                    <span class="link-subtitle">View my work</span>
                 </div>
                 <div class="link-arrow">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                 </div>
-            </a>
+            </div>
         </div>
 
         <!-- Minimal Social Links -->
@@ -140,6 +140,50 @@
             </a>
         </footer>
     </main>
+
+    <!-- Projects Modal -->
+    <div id="projects-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Selected Projects</h3>
+                <button class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <a href="https://zcashprice.now" target="_blank" rel="noopener" class="project-item">
+                    <div class="project-icon">
+                        <img src="zcash-logo.png" alt="Zcash">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-name">zcashprice.now</span>
+                        <span class="project-desc">Real-time Zcash price tracker</span>
+                    </div>
+                    <div class="project-arrow">→</div>
+                </a>
+
+                <a href="https://zecprice.now" target="_blank" rel="noopener" class="project-item">
+                    <div class="project-icon">
+                        <img src="zcash-logo.png" alt="Zcash">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-name">zecprice.now</span>
+                        <span class="project-desc">ZEC Price Monitor</span>
+                    </div>
+                    <div class="project-arrow">→</div>
+                </a>
+
+                <a href="https://boxbazaar.io" target="_blank" rel="noopener" class="project-item">
+                    <div class="project-icon">
+                        <img src="boxbazaar-logo.png" alt="BoxBazaar">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-name">boxbazaar.io</span>
+                        <span class="project-desc">Decentralized marketplace</span>
+                    </div>
+                    <div class="project-arrow">→</div>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
