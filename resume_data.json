@@ -1,0 +1,61 @@
+{
+  "name": "Your Name",
+  "title": "Software Engineer",
+  "email": "your.email@example.com",
+  "phone": "(555) 123-4567",
+  "location": "City, State",
+  "linkedin": "linkedin.com/in/yourprofile",
+  "github": "github.com/yourusername",
+  "website": "yourwebsite.com",
+  "summary": "Passionate software engineer with expertise in full-stack development, cloud technologies, and building scalable applications. Proven track record of delivering high-quality solutions that drive business value.",
+  "experience": [
+    {
+      "title": "Senior Software Engineer",
+      "company": "Tech Company",
+      "location": "City, State",
+      "dates": "2022 - Present",
+      "bullets": [
+        "Led development of microservices architecture serving 1M+ daily active users",
+        "Reduced API response times by 40% through performance optimization",
+        "Mentored team of 5 junior developers and established code review standards"
+      ]
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Startup Inc",
+      "location": "City, State",
+      "dates": "2020 - 2022",
+      "bullets": [
+        "Built real-time data processing pipeline handling 10K events per second",
+        "Implemented CI/CD workflows reducing deployment time by 60%",
+        "Developed customer-facing dashboard using React and TypeScript"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "school": "University Name",
+      "location": "City, State",
+      "dates": "2016 - 2020",
+      "gpa": "3.8/4.0"
+    }
+  ],
+  "skills": {
+    "languages": ["Python", "JavaScript", "TypeScript", "Go", "SQL"],
+    "frameworks": ["React", "Node.js", "Django", "FastAPI", "Next.js"],
+    "tools": ["Docker", "Kubernetes", "AWS", "PostgreSQL", "Redis", "Git"]
+  },
+  "projects": [
+    {
+      "name": "Open Source Project",
+      "description": "Contributed to popular open-source library with 5K+ GitHub stars",
+      "technologies": ["Python", "FastAPI", "PostgreSQL"]
+    },
+    {
+      "name": "Personal Project",
+      "description": "Built a real-time cryptocurrency price tracker with alerts",
+      "technologies": ["React", "Node.js", "WebSockets"]
+    }
+  ]
+}
