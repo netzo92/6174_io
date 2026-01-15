@@ -91,9 +91,9 @@ def create_styles():
         spaceAfter=4
     ))
     
-    # Bullet point style
+    # Bullet point style (named ResumeBullet to avoid conflict)
     styles.add(ParagraphStyle(
-        name='Bullet',
+        name='ResumeBullet',
         parent=styles['Normal'],
         fontSize=10,
         textColor=colors.HexColor('#333333'),
@@ -194,7 +194,7 @@ def build_resume(data, output_path="public/resume.pdf"):
             
             # Bullet points
             for bullet in job.get("bullets", []):
-                story.append(Paragraph(f"• {bullet}", styles["Bullet"]))
+                story.append(Paragraph(f"• {bullet}", styles["ResumeBullet"]))
             
             story.append(Spacer(1, 8))
     
@@ -235,11 +235,11 @@ def build_resume(data, output_path="public/resume.pdf"):
             story.append(Paragraph(project_header, styles["JobTitle"]))
             
             if project.get("description"):
-                story.append(Paragraph(project["description"], styles["Bullet"]))
+                story.append(Paragraph(project["description"], styles["ResumeBullet"]))
             
             if project.get("technologies"):
                 tech_line = f"<i>Technologies: {', '.join(project['technologies'])}</i>"
-                story.append(Paragraph(tech_line, styles["Bullet"]))
+                story.append(Paragraph(tech_line, styles["ResumeBullet"]))
             
             story.append(Spacer(1, 4))
     
