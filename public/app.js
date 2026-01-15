@@ -7,148 +7,169 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollEffects();
     initAnimations();
     initWavyCracks();
+    initGitHubStats();
 });
 
 /**
- * Wavy Cartoony Grass Effect
+ * GitHub Stats Tab Switching
+ */
+function initGitHubStats() {
+    const tabs = document.querySelectorAll('.stats-tab');
+    const views = document.querySelectorAll('.stats-view');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetTab = tab.dataset.tab;
+
+            // Update active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // Update active view
+            views.forEach(view => {
+                view.classList.remove('active');
+                if (view.id === `${targetTab}-view`) {
+                    view.classList.add('active');
+                }
+            });
+        });
+    });
+}
+
+/**
+ * Top-Down 2D RPG Style Grass Effect
  */
 function initWavyCracks() {
-    // Create canvas overlay
     const canvas = document.createElement('canvas');
-    canvas.id = 'wavy-grass';
+    canvas.id = 'rpg-grass';
     canvas.style.cssText = `
         position: fixed;
-        bottom: 0;
+        top: 0;
         left: 0;
         width: 100%;
-        height: 200px;
+        height: 100%;
         pointer-events: none;
-        z-index: 1;
+        z-index: 0;
     `;
-    document.body.appendChild(canvas);
+    document.body.insertBefore(canvas, document.body.firstChild);
 
     const ctx = canvas.getContext('2d');
-    let grassBlades = [];
+    let grassTufts = [];
     let time = 0;
+    const TILE_SIZE = 32;
 
-    // Resize handler
     function resize() {
         canvas.width = window.innerWidth;
-        canvas.height = 200;
-        generateGrass();
+        canvas.height = window.innerHeight;
+        generateGrassTufts();
     }
 
-    // Generate grass blades
-    function generateGrass() {
-        grassBlades = [];
-        const bladeCount = Math.floor(canvas.width / 4);
+    function generateGrassTufts() {
+        grassTufts = [];
+        const cols = Math.ceil(canvas.width / TILE_SIZE) + 1;
+        const rows = Math.ceil(canvas.height / TILE_SIZE) + 1;
 
-        for (let i = 0; i < bladeCount; i++) {
-            grassBlades.push({
-                x: (i / bladeCount) * canvas.width + (Math.random() - 0.5) * 8,
-                height: Math.random() * 60 + 40,
-                width: Math.random() * 4 + 2,
-                curve: Math.random() * 0.3 + 0.1,
-                speed: Math.random() * 1.5 + 0.5,
-                phase: Math.random() * Math.PI * 2,
-                color: getGrassColor(),
-                layer: Math.floor(Math.random() * 3)
-            });
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                // Add 1-3 grass tufts per tile with some randomness
+                const numTufts = Math.floor(Math.random() * 3) + 1;
+                for (let t = 0; t < numTufts; t++) {
+                    grassTufts.push({
+                        x: col * TILE_SIZE + Math.random() * TILE_SIZE,
+                        y: row * TILE_SIZE + Math.random() * TILE_SIZE,
+                        size: Math.random() * 6 + 4,
+                        blades: Math.floor(Math.random() * 3) + 2,
+                        phase: Math.random() * Math.PI * 2,
+                        speed: Math.random() * 0.5 + 0.3,
+                        colorVariant: Math.floor(Math.random() * 4)
+                    });
+                }
+            }
         }
-        grassBlades.sort((a, b) => a.layer - b.layer);
     }
 
-    function getGrassColor() {
-        const colors = [
-            { h: 120, s: 80, l: 55 },
-            { h: 130, s: 75, l: 60 },
-            { h: 110, s: 85, l: 65 },
-            { h: 125, s: 90, l: 70 },
-            { h: 100, s: 90, l: 75 },
-            { h: 115, s: 95, l: 80 },
-            { h: 90, s: 85, l: 65 },
-            { h: 80, s: 90, l: 70 },
+    function getGrassColors(variant) {
+        const palettes = [
+            { dark: '#2d5a27', mid: '#3d7a37', light: '#4d9a47' },  // Forest green
+            { dark: '#2a6b2a', mid: '#3a8b3a', light: '#5aab5a' },  // Bright green
+            { dark: '#3a6a30', mid: '#4a8a40', light: '#6aaa60' },  // Lime green
+            { dark: '#286028', mid: '#388038', light: '#58a058' },  // Deep green
         ];
-        return colors[Math.floor(Math.random() * colors.length)];
+        return palettes[variant % palettes.length];
     }
 
-    function drawBlade(blade, windOffset) {
-        const { x, height, width, curve, color, layer } = blade;
-        const baseY = canvas.height;
-        const sway = Math.sin(time * blade.speed + blade.phase) * (15 + layer * 5) + windOffset;
-        const opacity = 0.9 + layer * 0.05;
+    // Draw a single top-down grass tuft (like Pokemon/Zelda style)
+    function drawGrassTuft(tuft) {
+        const { x, y, size, blades, phase, speed, colorVariant } = tuft;
+        const colors = getGrassColors(colorVariant);
+        const sway = Math.sin(time * speed + phase) * 2;
 
-        ctx.beginPath();
-        ctx.strokeStyle = `hsla(${color.h}, ${color.s}%, ${color.l}%, ${opacity})`;
-        ctx.lineWidth = width;
-        ctx.lineCap = 'round';
-        ctx.moveTo(x, baseY);
+        for (let i = 0; i < blades; i++) {
+            const angle = (i / blades) * Math.PI - Math.PI / 2;
+            const bladeLength = size * (0.7 + Math.random() * 0.3);
+            const bladeSway = sway * (i % 2 === 0 ? 1 : -1);
 
-        const cpX = x + sway * curve * 2;
-        const cpY = baseY - height * 0.6;
-        const endX = x + sway;
-        const endY = baseY - height;
-
-        ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-        ctx.stroke();
-
-        if (layer === 2 && Math.random() > 0.7) {
+            // Draw blade shadow
             ctx.beginPath();
-            ctx.strokeStyle = `hsla(${color.h}, ${color.s}%, ${color.l + 20}%, 0.3)`;
-            ctx.lineWidth = width * 0.5;
-            ctx.moveTo(x + 1, baseY - height * 0.3);
-            ctx.quadraticCurveTo(cpX + 1, cpY, endX + 1, endY);
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.moveTo(x + 1, y + 1);
+            ctx.lineTo(
+                x + Math.cos(angle) * bladeLength + bladeSway + 1,
+                y + Math.sin(angle) * bladeLength * 0.6 + 1
+            );
             ctx.stroke();
-        }
-    }
 
-    function drawGrass() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        time += 0.02;
-        const globalWind = Math.sin(time * 0.5) * 5;
-
-        const groundGradient = ctx.createLinearGradient(0, canvas.height - 30, 0, canvas.height);
-        groundGradient.addColorStop(0, 'rgba(60, 140, 60, 0.95)');
-        groundGradient.addColorStop(1, 'rgba(45, 100, 45, 1)');
-        ctx.fillStyle = groundGradient;
-        ctx.fillRect(0, canvas.height - 25, canvas.width, 25);
-
-        grassBlades.forEach(blade => drawBlade(blade, globalWind));
-        drawFlowers();
-    }
-
-    function drawFlowers() {
-        const flowerPositions = [
-            { x: canvas.width * 0.15, y: canvas.height - 70 },
-            { x: canvas.width * 0.4, y: canvas.height - 85 },
-            { x: canvas.width * 0.65, y: canvas.height - 65 },
-            { x: canvas.width * 0.85, y: canvas.height - 80 },
-        ];
-        const sway = Math.sin(time * 0.8) * 3;
-        const flowerColors = ['#FFB6C1', '#FFD700', '#87CEEB', '#DDA0DD'];
-
-        flowerPositions.forEach((pos, i) => {
+            // Draw dark base of blade
             ctx.beginPath();
-            ctx.strokeStyle = '#228B22';
+            ctx.strokeStyle = colors.dark;
+            ctx.lineWidth = 3;
+            ctx.moveTo(x, y);
+            ctx.lineTo(
+                x + Math.cos(angle) * bladeLength * 0.4,
+                y + Math.sin(angle) * bladeLength * 0.3
+            );
+            ctx.stroke();
+
+            // Draw mid section
+            ctx.beginPath();
+            ctx.strokeStyle = colors.mid;
             ctx.lineWidth = 2;
-            ctx.moveTo(pos.x, canvas.height - 20);
-            ctx.quadraticCurveTo(pos.x + sway, pos.y + 20, pos.x + sway * 1.5, pos.y);
+            ctx.moveTo(
+                x + Math.cos(angle) * bladeLength * 0.3,
+                y + Math.sin(angle) * bladeLength * 0.2
+            );
+            ctx.lineTo(
+                x + Math.cos(angle) * bladeLength * 0.7 + bladeSway * 0.5,
+                y + Math.sin(angle) * bladeLength * 0.45
+            );
             ctx.stroke();
 
+            // Draw light tip
             ctx.beginPath();
-            ctx.fillStyle = flowerColors[i % flowerColors.length];
-            ctx.arc(pos.x + sway * 1.5, pos.y, 6, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.strokeStyle = colors.light;
+            ctx.lineWidth = 1.5;
+            ctx.moveTo(
+                x + Math.cos(angle) * bladeLength * 0.6 + bladeSway * 0.5,
+                y + Math.sin(angle) * bladeLength * 0.4
+            );
+            ctx.lineTo(
+                x + Math.cos(angle) * bladeLength + bladeSway,
+                y + Math.sin(angle) * bladeLength * 0.6
+            );
+            ctx.stroke();
+        }
+    }
 
-            ctx.beginPath();
-            ctx.fillStyle = '#FFD700';
-            ctx.arc(pos.x + sway * 1.5, pos.y, 3, 0, Math.PI * 2);
-            ctx.fill();
-        });
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        time += 0.03;
+        grassTufts.forEach(tuft => drawGrassTuft(tuft));
     }
 
     function animate() {
-        drawGrass();
+        draw();
         requestAnimationFrame(animate);
     }
 

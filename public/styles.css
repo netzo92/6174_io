@@ -450,6 +450,114 @@ a {
 }
 
 /* ===================================
+   GitHub Stats Panel (RPG Style)
+   =================================== */
+.github-stats-panel {
+    margin-top: var(--spacing-xl);
+    background: var(--color-bg-card);
+    border: 1px solid rgba(61, 122, 55, 0.3);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards;
+    animation-delay: 0.7s;
+}
+
+.stats-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+    background: rgba(61, 122, 55, 0.1);
+    border-bottom: 1px solid rgba(61, 122, 55, 0.2);
+}
+
+.stats-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4d9a47;
+    letter-spacing: 0.5px;
+}
+
+.stats-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.stats-tab {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.stats-tab:hover {
+    color: #4d9a47;
+    background: rgba(61, 122, 55, 0.1);
+}
+
+.stats-tab.active {
+    color: #4d9a47;
+    background: rgba(61, 122, 55, 0.2);
+    border-color: rgba(61, 122, 55, 0.4);
+}
+
+.stats-content {
+    padding: var(--spacing-md);
+}
+
+.stats-view {
+    display: none;
+}
+
+.stats-view.active {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    align-items: center;
+}
+
+.stat-badge {
+    transition: var(--transition-base);
+    opacity: 0.8;
+}
+
+.stat-badge:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.stat-badge img {
+    height: 20px;
+    display: block;
+}
+
+.activity-chart {
+    width: 100%;
+    transition: var(--transition-base);
+    opacity: 0.7;
+}
+
+.activity-chart:hover {
+    opacity: 1;
+}
+
+.activity-chart img {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    border-radius: var(--radius-sm);
+}
+
+/* ===================================
    Footer
    =================================== */
 .footer {
