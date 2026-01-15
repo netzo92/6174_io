@@ -400,6 +400,16 @@ a {
     color: var(--color-discord);
 }
 
+.link-icon.linkedin {
+    background: rgba(0, 119, 181, 0.2);
+    color: #0077b5;
+}
+
+.link-icon.projects {
+    background: rgba(0, 212, 255, 0.15);
+    color: var(--color-accent-primary);
+}
+
 /* Link Content */
 .link-content {
     flex: 1;
