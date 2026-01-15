@@ -648,3 +648,16 @@ a {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ===================================
+   More Links Button
+   =================================== */
+.more-links-btn {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    transition: color 0.25s ease;
+}
+
+.more-links-btn:hover {
+    color: var(--color-accent-primary);
+}

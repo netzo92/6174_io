@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initWavyCracks();
     initGitHubStats();
     initTimeDisplay();
+    initMMOChatPopup();
+    initScrollTraversal();
 });
 
 /**
@@ -386,6 +388,211 @@ function initTimeDisplay() {
     // Update immediately and then every second
     updateTime();
     setInterval(updateTime, 1000);
+}
+
+/**
+ * MMO-Style Chat Popup for Resume Download
+ */
+function initMMOChatPopup() {
+    // Create chat popup element
+    const chatPopup = document.createElement('div');
+    chatPopup.id = 'mmo-chat-popup';
+    chatPopup.innerHTML = `
+        <div class="chat-header">
+            <span class="chat-npc-name">📜 Quest Giver</span>
+            <button class="chat-close">×</button>
+        </div>
+        <div class="chat-body">
+            <p class="chat-message">Greetings, traveler! I have a scroll containing the skills and experience of this adventurer. Would you like to take it with you?</p>
+            <div class="chat-actions">
+                <a href="resume.pdf" class="chat-btn chat-accept" download>Accept Quest 📥</a>
+                <button class="chat-btn chat-decline">Maybe Later</button>
+            </div>
+        </div>
+    `;
+
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        #mmo-chat-popup {
+            position: fixed;
+            left: 20px;
+            bottom: 80px;
+            width: 280px;
+            background: linear-gradient(180deg, rgba(30, 35, 25, 0.95) 0%, rgba(20, 25, 18, 0.98) 100%);
+            border: 2px solid #4d9a47;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            z-index: 1001;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(77, 154, 71, 0.2);
+            transform: translateX(-120%) scale(0.9);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        #mmo-chat-popup.visible {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: rgba(61, 122, 55, 0.3);
+            border-bottom: 1px solid rgba(77, 154, 71, 0.4);
+            border-radius: 6px 6px 0 0;
+        }
+        .chat-npc-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #7cfc7c;
+            text-shadow: 0 0 8px rgba(124, 252, 124, 0.5);
+        }
+        .chat-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+        .chat-close:hover {
+            color: #ff6b6b;
+        }
+        .chat-body {
+            padding: 14px;
+        }
+        .chat-message {
+            font-size: 0.82rem;
+            color: #d4d4d4;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+        .chat-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .chat-btn {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: inherit;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+        .chat-accept {
+            background: linear-gradient(180deg, #4d9a47 0%, #3d7a37 100%);
+            border: 1px solid #5aaa57;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .chat-accept:hover {
+            background: linear-gradient(180deg, #5daa57 0%, #4d8a47 100%);
+            box-shadow: 0 0 12px rgba(77, 154, 71, 0.5);
+            transform: translateY(-1px);
+        }
+        .chat-decline {
+            background: rgba(60, 60, 70, 0.6);
+            border: 1px solid rgba(100, 100, 110, 0.5);
+            color: #999;
+        }
+        .chat-decline:hover {
+            background: rgba(70, 70, 80, 0.8);
+            color: #bbb;
+        }
+        @media (max-width: 520px) {
+            #mmo-chat-popup {
+                left: 10px;
+                right: 10px;
+                width: auto;
+                bottom: 70px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(chatPopup);
+
+    // Show popup after random 2-4 seconds
+    const delay = Math.random() * 2000 + 2000; // 2000-4000ms
+    setTimeout(() => {
+        chatPopup.classList.add('visible');
+    }, delay);
+
+    // Close button handler
+    chatPopup.querySelector('.chat-close').addEventListener('click', () => {
+        chatPopup.classList.remove('visible');
+    });
+
+    // Decline button handler
+    chatPopup.querySelector('.chat-decline').addEventListener('click', () => {
+        chatPopup.classList.remove('visible');
+    });
+
+    // Accept button handler - close after click
+    chatPopup.querySelector('.chat-accept').addEventListener('click', () => {
+        setTimeout(() => chatPopup.classList.remove('visible'), 500);
+    });
+}
+
+/**
+ * Scroll Traversal Effect - Makes it feel like exploring a game world
+ */
+function initScrollTraversal() {
+    const canvas = document.getElementById('rpg-grass');
+    if (!canvas) return;
+
+    let scrollOffset = 0;
+    let targetScrollOffset = 0;
+
+    // Update target offset on scroll
+    window.addEventListener('scroll', () => {
+        targetScrollOffset = window.scrollY * 0.3;
+    });
+
+    // Smooth interpolation for the grass canvas position
+    function updateGrassPosition() {
+        scrollOffset += (targetScrollOffset - scrollOffset) * 0.08;
+        canvas.style.transform = `translateY(${-scrollOffset}px)`;
+        requestAnimationFrame(updateGrassPosition);
+    }
+
+    updateGrassPosition();
+
+    // Add scroll indicator style
+    const scrollStyle = document.createElement('style');
+    scrollStyle.textContent = `
+        body::after {
+            content: '';
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60px;
+            background: rgba(77, 154, 71, 0.2);
+            border-radius: 2px;
+            z-index: 1000;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: rgba(77, 154, 71, 0.6);
+            border-radius: 2px;
+            z-index: 1001;
+            transition: top 0.1s ease;
+        }
+    `;
+    document.head.appendChild(scrollStyle);
 }
 
 /**
