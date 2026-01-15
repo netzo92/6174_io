@@ -1,18 +1,33 @@
 {
-  "name": "Your Name",
-  "title": "Software Engineer",
-  "email": "your.email@example.com",
-  "phone": "(555) 123-4567",
-  "location": "City, State",
-  "linkedin": "linkedin.com/in/yourprofile",
-  "github": "github.com/yourusername",
-  "website": "yourwebsite.com",
+  "name": "METEHAN OZTEN",
+  "contact": {
+    "address_line1": "13593 S 600 W",
+    "address_line2": "Draper, UT 84020",
+    "details": "Phone: 805-705-2840    Email: m_ozten@yahoo.com    GitHub: https://github.com/netzo92"
+  },
   "summary": "Passionate software engineer with expertise in full-stack development, cloud technologies, and building scalable applications. Proven track record of delivering high-quality solutions that drive business value.",
+  "education": [
+    {
+      "institution": "University of California, Santa Barbara, College of Engineering",
+      "items": [
+        {
+          "left": "M.S. Computer Science, Systems Specialization, 2018",
+          "right": "GPA: 3.86"
+        },
+        {
+          "left": "Master’s Project: Decentralized stock ledger built on the Ethereum network"
+        },
+        {
+          "left": "B.S. Computer Engineering, High Honors, 2015",
+          "right": "GPA: 3.86"
+        }
+      ]
+    }
+  ],
   "experience": [
     {
-      "title": "Senior Software Engineer",
+      "role": "Senior Software Engineer",
       "company": "Tech Company",
-      "location": "City, State",
       "dates": "2022 - Present",
       "bullets": [
         "Led development of microservices architecture serving 1M+ daily active users",
@@ -21,9 +36,8 @@
       ]
     },
     {
-      "title": "Software Engineer",
+      "role": "Software Engineer",
       "company": "Startup Inc",
-      "location": "City, State",
       "dates": "2020 - 2022",
       "bullets": [
         "Built real-time data processing pipeline handling 10K events per second",
@@ -32,30 +46,41 @@
       ]
     }
   ],
-  "education": [
+  "projects": [
     {
-      "degree": "Bachelor of Science in Computer Science",
-      "school": "University Name",
-      "location": "City, State",
-      "dates": "2016 - 2020",
-      "gpa": "3.8/4.0"
+      "title": "Open Source Project",
+      "url": "https://github.com/example/project",
+      "bullets": [
+        "Contributed to popular open-source library with 5K+ GitHub stars",
+        "Implemented new feature handling async data processing"
+      ],
+      "in_progress": []
+    },
+    {
+      "title": "Personal Project",
+      "url": "https://zcashprice.now",
+      "bullets": [
+        "Built a real-time cryptocurrency price tracker with alerts"
+      ],
+      "in_progress": [
+        "Adding historical data chart visualization"
+      ]
     }
   ],
   "skills": {
-    "languages": ["Python", "JavaScript", "TypeScript", "Go", "SQL"],
-    "frameworks": ["React", "Node.js", "Django", "FastAPI", "Next.js"],
-    "tools": ["Docker", "Kubernetes", "AWS", "PostgreSQL", "Redis", "Git"]
+    "Languages": "Python, JavaScript, TypeScript, Go, SQL",
+    "Frameworks": "React, Node.js, Django, FastAPI, Next.js",
+    "Tools": "Docker, Kubernetes, AWS, PostgreSQL, Redis, Git"
   },
-  "projects": [
-    {
-      "name": "Open Source Project",
-      "description": "Contributed to popular open-source library with 5K+ GitHub stars",
-      "technologies": ["Python", "FastAPI", "PostgreSQL"]
-    },
-    {
-      "name": "Personal Project",
-      "description": "Built a real-time cryptocurrency price tracker with alerts",
-      "technologies": ["React", "Node.js", "WebSockets"]
-    }
+  "distinctions": [
+    "Dean's List 2014-2015",
+    "Best Hackathon Project 2018"
+  ],
+  "leadership": [
+    "President of Computer Science Club (2014-2015)",
+    "Led student workshop on Introduction to Python"
+  ],
+  "publications": [
+    "M. Ozten et al., \"Decentralized ledgers in modern finance\", IEEE 2018"
   ]
 }

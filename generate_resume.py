@@ -1,252 +1,234 @@
 #!/usr/bin/env python3
 """
-Resume PDF Generator
-Generates a professional resume PDF from JSON data using reportlab.
+Resume Generator
+Generates a professional resume DOCX from JSON data using python-docx.
 """
-
 import json
 import os
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
-
+from docx import Document
+from docx.shared import Inches, Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
+from docx.oxml.ns import qn
 
 def load_resume_data(filepath="resume_data.json"):
     """Load resume data from JSON file."""
-    with open(filepath, "r") as f:
-        return json.load(f)
+    try:
+        with open(filepath, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Error: {filepath} not found.")
+        return {}
+    except json.JSONDecodeError:
+        print(f"Error: Failed to decode JSON from {filepath}.")
+        return {}
 
+def setup_document():
+    """Initialize document and section margins."""
+    doc = Document()
+    section = doc.sections[0]
+    section.top_margin = Inches(0.5)
+    section.bottom_margin = Inches(0.5)
+    section.left_margin = Inches(0.6)
+    section.right_margin = Inches(0.6)
+    return doc
 
-def create_styles():
-    """Create custom paragraph styles for the resume."""
-    styles = getSampleStyleSheet()
-    
-    # Name style - large and bold
-    styles.add(ParagraphStyle(
-        name='Name',
-        parent=styles['Heading1'],
-        fontSize=24,
-        textColor=colors.HexColor('#1a1a2e'),
-        alignment=TA_CENTER,
-        spaceAfter=6,
-        fontName='Helvetica-Bold'
-    ))
-    
-    # Title style (named ResumeTitle to avoid conflict with built-in Title)
-    styles.add(ParagraphStyle(
-        name='ResumeTitle',
-        parent=styles['Normal'],
-        fontSize=12,
-        textColor=colors.HexColor('#4a4a6a'),
-        alignment=TA_CENTER,
-        spaceAfter=12,
-        fontName='Helvetica'
-    ))
-    
-    # Contact info style
-    styles.add(ParagraphStyle(
-        name='Contact',
-        parent=styles['Normal'],
-        fontSize=9,
-        textColor=colors.HexColor('#666666'),
-        alignment=TA_CENTER,
-        spaceAfter=16,
-        fontName='Helvetica'
-    ))
-    
-    # Section header style
-    styles.add(ParagraphStyle(
-        name='SectionHeader',
-        parent=styles['Heading2'],
-        fontSize=12,
-        textColor=colors.HexColor('#1a1a2e'),
-        spaceBefore=12,
-        spaceAfter=8,
-        fontName='Helvetica-Bold',
-        borderWidth=1,
-        borderColor=colors.HexColor('#1a1a2e'),
-        borderPadding=(0, 0, 4, 0)
-    ))
-    
-    # Job title style
-    styles.add(ParagraphStyle(
-        name='JobTitle',
-        parent=styles['Normal'],
-        fontSize=11,
-        textColor=colors.HexColor('#1a1a2e'),
-        fontName='Helvetica-Bold',
-        spaceAfter=2
-    ))
-    
-    # Company style
-    styles.add(ParagraphStyle(
-        name='Company',
-        parent=styles['Normal'],
-        fontSize=10,
-        textColor=colors.HexColor('#4a4a6a'),
-        fontName='Helvetica-Oblique',
-        spaceAfter=4
-    ))
-    
-    # Bullet point style (named ResumeBullet to avoid conflict)
-    styles.add(ParagraphStyle(
-        name='ResumeBullet',
-        parent=styles['Normal'],
-        fontSize=10,
-        textColor=colors.HexColor('#333333'),
-        leftIndent=15,
-        spaceAfter=3,
-        fontName='Helvetica',
-        alignment=TA_JUSTIFY
-    ))
-    
-    # Summary style
-    styles.add(ParagraphStyle(
-        name='Summary',
-        parent=styles['Normal'],
-        fontSize=10,
-        textColor=colors.HexColor('#333333'),
-        spaceAfter=12,
-        fontName='Helvetica',
-        alignment=TA_JUSTIFY
-    ))
-    
-    # Skills style
-    styles.add(ParagraphStyle(
-        name='Skills',
-        parent=styles['Normal'],
-        fontSize=10,
-        textColor=colors.HexColor('#333333'),
-        spaceAfter=4,
-        fontName='Helvetica'
-    ))
-    
-    return styles
+def setup_styles(doc):
+    """Configure Normal style for consistent formatting."""
+    normal = doc.styles['Normal']
+    normal.font.name = 'Calibri'
+    normal._element.rPr.rFonts.set(qn('w:eastAsia'), 'Calibri')
+    normal.font.size = Pt(11)
+    normal.font.bold = False
 
+def add_center(doc, text, bold=False, size=None):
+    """Add a centered paragraph."""
+    p = doc.add_paragraph()
+    r = p.add_run(text)
+    r.bold = bold
+    if size:
+        r.font.size = Pt(size)
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.paragraph_format.space_after = Pt(0)
+    return p
 
-def build_resume(data, output_path="public/resume.pdf"):
-    """Build the resume PDF from data."""
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+def add_section(doc, title):
+    """Add a section header."""
+    p = doc.add_paragraph()
+    r = p.add_run(title.upper())
+    r.bold = True
+    r.font.size = Pt(12)
+    p.paragraph_format.space_before = Pt(10)
+    p.paragraph_format.space_after = Pt(4)
+    return p
+
+def add_job_header(doc, left_text, right_text):
+    """Add a job header with right-aligned date."""
+    p = doc.add_paragraph()
+    p.paragraph_format.tab_stops.add_tab_stop(Inches(6.7), WD_TAB_ALIGNMENT.RIGHT)
+    r1 = p.add_run(left_text)
+    r1.bold = True
+    p.add_run("\t")
+    r2 = p.add_run(right_text)
+    r2.bold = False
+    p.paragraph_format.space_after = Pt(2)
+    return p
+
+def add_bullet(doc, text):
+    """Add a bullet point with hanging indent."""
+    p = doc.add_paragraph()
+    p.paragraph_format.left_indent = Inches(0.25)
+    p.paragraph_format.first_line_indent = Inches(-0.15)
+    p.paragraph_format.space_after = Pt(0)
+    p.add_run("• ").bold = False
+    p.add_run(text)
+    return p
+
+def edu_line(doc, left, right=None):
+    """Add an education line, optionally with right-aligned text."""
+    p = doc.add_paragraph()
+    if right:
+        p.paragraph_format.tab_stops.add_tab_stop(Inches(6.7), WD_TAB_ALIGNMENT.RIGHT)
+        p.add_run(left)
+        p.add_run("\t")
+        p.add_run(right)
+    else:
+        p.add_run(left)
+    p.paragraph_format.space_after = Pt(0)
+    return p
+
+def build_resume(data, output_path="public/Metehan_Ozten_Resume.docx"):
+    """Build the resume DOCX from data."""
+    if not data:
+        return
+
+    doc = setup_document()
+    setup_styles(doc)
+
+    # --- Header ---
+    if "name" in data:
+        add_center(doc, data["name"], bold=True, size=18)
     
-    # Create document
-    doc = SimpleDocTemplate(
-        output_path,
-        pagesize=letter,
-        rightMargin=0.6*inch,
-        leftMargin=0.6*inch,
-        topMargin=0.5*inch,
-        bottomMargin=0.5*inch
-    )
-    
-    styles = create_styles()
-    story = []
-    
-    # Header - Name and Title
-    story.append(Paragraph(data["name"], styles["Name"]))
-    story.append(Paragraph(data["title"], styles["ResumeTitle"]))
-    
-    # Contact info
-    contact_parts = []
-    if data.get("email"):
-        contact_parts.append(data["email"])
-    if data.get("phone"):
-        contact_parts.append(data["phone"])
-    if data.get("location"):
-        contact_parts.append(data["location"])
-    
-    contact_line1 = " • ".join(contact_parts)
-    story.append(Paragraph(contact_line1, styles["Contact"]))
-    
-    # Links
-    link_parts = []
-    if data.get("linkedin"):
-        link_parts.append(data["linkedin"])
-    if data.get("github"):
-        link_parts.append(data["github"])
-    if data.get("website"):
-        link_parts.append(data["website"])
-    
-    if link_parts:
-        contact_line2 = " • ".join(link_parts)
-        story.append(Paragraph(contact_line2, styles["Contact"]))
-    
-    # Summary
-    if data.get("summary"):
-        story.append(Paragraph("SUMMARY", styles["SectionHeader"]))
-        story.append(Paragraph(data["summary"], styles["Summary"]))
-    
-    # Experience
-    if data.get("experience"):
-        story.append(Paragraph("EXPERIENCE", styles["SectionHeader"]))
-        
-        for job in data["experience"]:
-            # Job title and dates on same conceptual line
-            job_header = f"{job['title']} | {job['dates']}"
-            story.append(Paragraph(job_header, styles["JobTitle"]))
-            
-            # Company and location
-            company_line = f"{job['company']}, {job['location']}"
-            story.append(Paragraph(company_line, styles["Company"]))
-            
-            # Bullet points
-            for bullet in job.get("bullets", []):
-                story.append(Paragraph(f"• {bullet}", styles["ResumeBullet"]))
-            
-            story.append(Spacer(1, 8))
-    
-    # Education
-    if data.get("education"):
-        story.append(Paragraph("EDUCATION", styles["SectionHeader"]))
-        
+    if "contact" in data:
+        c = data["contact"]
+        if "address_line1" in c:
+            add_center(doc, c["address_line1"])
+        if "address_line2" in c:
+            add_center(doc, c["address_line2"])
+        if "details" in c:
+            add_center(doc, c["details"])
+    doc.add_paragraph("")
+
+    # --- Summary ---
+    if "summary" in data:
+        add_section(doc, "Summary")
+        p = doc.add_paragraph(data["summary"])
+        p.paragraph_format.space_after = Pt(2)
+
+    # --- Education ---
+    if "education" in data:
+        add_section(doc, "Education")
         for edu in data["education"]:
-            edu_header = f"{edu['degree']} | {edu['dates']}"
-            story.append(Paragraph(edu_header, styles["JobTitle"]))
+            # Institution line
+            if "institution" in edu:
+                p = doc.add_paragraph()
+                r = p.add_run(edu["institution"])
+                r.bold = True
+                p.paragraph_format.space_after = Pt(1)
             
-            edu_details = f"{edu['school']}, {edu['location']}"
-            if edu.get("gpa"):
-                edu_details += f" | GPA: {edu['gpa']}"
-            story.append(Paragraph(edu_details, styles["Company"]))
-            
-            story.append(Spacer(1, 6))
-    
-    # Skills
-    if data.get("skills"):
-        story.append(Paragraph("SKILLS", styles["SectionHeader"]))
-        
-        skills = data["skills"]
-        if isinstance(skills, dict):
-            for category, skill_list in skills.items():
-                skill_line = f"<b>{category.title()}:</b> {', '.join(skill_list)}"
-                story.append(Paragraph(skill_line, styles["Skills"]))
-        elif isinstance(skills, list):
-            story.append(Paragraph(", ".join(skills), styles["Skills"]))
-    
-    # Projects
-    if data.get("projects"):
-        story.append(Spacer(1, 6))
-        story.append(Paragraph("PROJECTS", styles["SectionHeader"]))
-        
-        for project in data["projects"]:
-            project_header = project["name"]
-            story.append(Paragraph(project_header, styles["JobTitle"]))
-            
-            if project.get("description"):
-                story.append(Paragraph(project["description"], styles["ResumeBullet"]))
-            
-            if project.get("technologies"):
-                tech_line = f"<i>Technologies: {', '.join(project['technologies'])}</i>"
-                story.append(Paragraph(tech_line, styles["ResumeBullet"]))
-            
-            story.append(Spacer(1, 4))
-    
-    # Build the PDF
-    doc.build(story)
-    print(f"✅ Resume generated successfully: {output_path}")
+            # Degree/Project lines
+            if "items" in edu:
+                for item in edu["items"]:
+                    edu_line(doc, item.get("left", ""), item.get("right"))
+        doc.add_paragraph("")
 
+    # --- Experience ---
+    if "experience" in data:
+        add_section(doc, "Experience")
+        for job in data["experience"]:
+            role = job.get("role", "")
+            company = job.get("company", "")
+            dates = job.get("dates", "")
+            
+            header_left = f"{role}, {company}"
+            add_job_header(doc, header_left, dates)
+            
+            for b in job.get("bullets", []):
+                add_bullet(doc, b)
+            doc.add_paragraph("")
+
+    # --- Projects ---
+    if "projects" in data:
+        add_section(doc, "Projects")
+        for project in data["projects"]:
+            title = project.get("title", "")
+            url = project.get("url", "")
+            
+            p = doc.add_paragraph()
+            r = p.add_run(title)
+            r.bold = True
+            p.paragraph_format.space_after = Pt(0)
+            
+            if url:
+                pu = doc.add_paragraph(url)
+                pu.paragraph_format.space_after = Pt(2)
+            else:
+                doc.add_paragraph("")
+                
+            for b in project.get("bullets", []):
+                add_bullet(doc, b)
+                
+            in_progress = project.get("in_progress", [])
+            if in_progress:
+                p2 = doc.add_paragraph()
+                r2 = p2.add_run("In Progress")
+                r2.bold = True
+                p2.paragraph_format.space_before = Pt(2)
+                p2.paragraph_format.space_after = Pt(0)
+                for ip in in_progress:
+                    add_bullet(doc, ip)
+            doc.add_paragraph("")
+
+    # --- Skills ---
+    if "skills" in data:
+        add_section(doc, "Skills")
+        skills = data["skills"]
+        # Handle both list and dict formats for backward compatibility
+        if isinstance(skills, dict):
+            for k, v in skills.items():
+                p = doc.add_paragraph()
+                rk = p.add_run(f"{k}: ")
+                rk.bold = True
+                # v could be a string "a, b, c" or a list ["a", "b"]
+                content = ", ".join(v) if isinstance(v, list) else v
+                p.add_run(content)
+                p.paragraph_format.space_after = Pt(0)
+        doc.add_paragraph("")
+
+    # --- Distinctions ---
+    if "distinctions" in data:
+        add_section(doc, "Distinctions")
+        for d in data["distinctions"]:
+            add_bullet(doc, d)
+        doc.add_paragraph("")
+
+    # --- Leadership ---
+    if "leadership" in data:
+        add_section(doc, "Leadership")
+        for l in data["leadership"]:
+            add_bullet(doc, l)
+        doc.add_paragraph("")
+
+    # --- Publications ---
+    if "publications" in data:
+        add_section(doc, "Publications")
+        for line in data["publications"]:
+            p = doc.add_paragraph(line)
+            p.paragraph_format.space_after = Pt(0)
+
+    # Save
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    doc.save(output_path)
+    print(f"✅ Resume generated successfully: {output_path}")
 
 def main():
     """Main entry point."""
@@ -255,7 +237,6 @@ def main():
     
     data = load_resume_data()
     build_resume(data)
-
 
 if __name__ == "__main__":
     main()
