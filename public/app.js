@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAnimations();
     initWavyCracks();
     initGitHubStats();
+    initTimeDisplay();
 });
 
 /**
@@ -80,7 +81,7 @@ function initWavyCracks() {
                         size: Math.random() * 6 + 4,
                         blades: Math.floor(Math.random() * 3) + 2,
                         phase: Math.random() * Math.PI * 2,
-                        speed: Math.random() * 0.5 + 0.3,
+                        speed: Math.random() * 0.2 + 0.1,
                         colorVariant: Math.floor(Math.random() * 4)
                     });
                 }
@@ -164,7 +165,7 @@ function initWavyCracks() {
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        time += 0.03;
+        time += 0.008;
         grassTufts.forEach(tuft => drawGrassTuft(tuft));
     }
 
@@ -316,6 +317,75 @@ function initAnimations() {
     document.querySelectorAll('.project-card').forEach((el, i) => {
         el.style.setProperty('--index', i);
     });
+}
+
+/**
+ * Time Display - Mountain and Pacific Time
+ */
+function initTimeDisplay() {
+    // Create time display element
+    const timeDisplay = document.createElement('div');
+    timeDisplay.id = 'time-display';
+    timeDisplay.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 16px;
+        background: rgba(20, 20, 30, 0.8);
+        border: 1px solid rgba(61, 122, 55, 0.3);
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        color: #a0a0b5;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        opacity: 0;
+        animation: fadeIn 0.6s ease forwards;
+        animation-delay: 1s;
+    `;
+    document.body.appendChild(timeDisplay);
+
+    function updateTime() {
+        const now = new Date();
+
+        // Format time for Mountain Time (America/Denver for MST/MDT)
+        const mountainTime = now.toLocaleTimeString('en-US', {
+            timeZone: 'America/Denver',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+
+        // Format time for Pacific Time (America/Los_Angeles for PST/PDT)
+        const pacificTime = now.toLocaleTimeString('en-US', {
+            timeZone: 'America/Los_Angeles',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+
+        timeDisplay.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: #4d9a47;">⛰️</span>
+                <span style="color: #f0f0f5; font-weight: 500;">MT:</span>
+                <span style="font-family: monospace;">${mountainTime}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: #00d4ff;">🌊</span>
+                <span style="color: #f0f0f5; font-weight: 500;">PT:</span>
+                <span style="font-family: monospace;">${pacificTime}</span>
+            </div>
+        `;
+    }
+
+    // Update immediately and then every second
+    updateTime();
+    setInterval(updateTime, 1000);
 }
 
 /**
