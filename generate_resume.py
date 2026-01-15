@@ -35,9 +35,9 @@ def create_styles():
         fontName='Helvetica-Bold'
     ))
     
-    # Title style
+    # Title style (named ResumeTitle to avoid conflict with built-in Title)
     styles.add(ParagraphStyle(
-        name='Title',
+        name='ResumeTitle',
         parent=styles['Normal'],
         fontSize=12,
         textColor=colors.HexColor('#4a4a6a'),
@@ -147,7 +147,7 @@ def build_resume(data, output_path="public/resume.pdf"):
     
     # Header - Name and Title
     story.append(Paragraph(data["name"], styles["Name"]))
-    story.append(Paragraph(data["title"], styles["Title"]))
+    story.append(Paragraph(data["title"], styles["ResumeTitle"]))
     
     # Contact info
     contact_parts = []
