@@ -5,7 +5,7 @@
     "address_line2": "Draper, UT 84020",
     "details": "Phone: 805-705-2840    Email: m_ozten@yahoo.com    GitHub: https://github.com/netzo92"
   },
-  "summary": "Passionate software engineer with expertise in full-stack development, cloud technologies, and building scalable applications. Proven track record of delivering high-quality solutions that drive business value.",
+  "summary": "Passionate software engineer with expertise in full-stack development, cloud technologies, and decentralized applications. Proven track record of delivering high-quality solutions that drive business value.",
   "education": [
     {
       "institution": "University of California, Santa Barbara, College of Engineering",
@@ -26,51 +26,57 @@
   ],
   "experience": [
     {
-      "role": "Senior Software Engineer",
-      "company": "Tech Company",
-      "dates": "2022 - Present",
+      "role": "Software Engineer",
+      "company": "Oracle",
+      "dates": "TODO: Add dates",
       "bullets": [
-        "Led development of microservices architecture serving 1M+ daily active users",
-        "Reduced API response times by 40% through performance optimization",
-        "Mentored team of 5 junior developers and established code review standards"
+        "TODO: Add description of role and achievements",
+        "TODO: Add specific technologies used"
       ]
     },
     {
       "role": "Software Engineer",
-      "company": "Startup Inc",
-      "dates": "2020 - 2022",
+      "company": "L-3 Communications",
+      "dates": "TODO: Add dates",
       "bullets": [
-        "Built real-time data processing pipeline handling 10K events per second",
-        "Implemented CI/CD workflows reducing deployment time by 60%",
-        "Developed customer-facing dashboard using React and TypeScript"
+        "TODO: Add description of role and achievements",
+        "TODO: Add specific technologies used"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "company": "Department of Energy",
+      "dates": "TODO: Add dates",
+      "bullets": [
+        "TODO: Add description of role and achievements",
+        "TODO: Add specific technologies used"
       ]
     }
   ],
   "projects": [
     {
-      "title": "Open Source Project",
-      "url": "https://github.com/example/project",
+      "title": "boxbazaar.io",
+      "url": "https://boxbazaar.io",
       "bullets": [
-        "Contributed to popular open-source library with 5K+ GitHub stars",
-        "Implemented new feature handling async data processing"
+        "Developed a decentralized marketplace platform.",
+        "Implemented secure transaction handling and user authentication."
       ],
       "in_progress": []
     },
     {
-      "title": "Personal Project",
+      "title": "zcashprice.now",
       "url": "https://zcashprice.now",
       "bullets": [
-        "Built a real-time cryptocurrency price tracker with alerts"
+        "Built a real-time Zcash price tracker with live updates.",
+        "Integrated cryptocurrency APIs for accurate market data."
       ],
-      "in_progress": [
-        "Adding historical data chart visualization"
-      ]
+      "in_progress": []
     }
   ],
   "skills": {
-    "Languages": "Python, JavaScript, TypeScript, Go, SQL",
+    "Languages": "Python, JavaScript, TypeScript, Go, SQL, Solidity",
     "Frameworks": "React, Node.js, Django, FastAPI, Next.js",
-    "Tools": "Docker, Kubernetes, AWS, PostgreSQL, Redis, Git"
+    "Tools": "Docker, Kubernetes, AWS, PostgreSQL, Redis, Git, Zcash"
   },
   "distinctions": [
     "Dean's List 2014-2015",
