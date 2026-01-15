@@ -52,91 +52,63 @@ function initTimeOfDayBackground() {
         const minute = sbTime.getMinutes();
         const timeValue = hour + minute / 60;
 
-        // Define time periods and their colors
-        // Dawn: 5:00 - 7:00
-        // Morning: 7:00 - 10:00
-        // Midday: 10:00 - 16:00
-        // Afternoon: 16:00 - 18:00
-        // Sunset: 18:00 - 20:00
-        // Dusk: 20:00 - 21:00
-        // Night: 21:00 - 5:00
+        // Define time periods and ground colors (not sky!)
+        // Ground should look like grass/earth with different lighting conditions
 
-        let bgPrimary, bgSecondary, skyGradient, grassTint;
+        let groundGradient;
 
         if (timeValue >= 5 && timeValue < 7) {
-            // Dawn - soft pink/orange glow
+            // Dawn - warm golden light starting on grass
             const t = (timeValue - 5) / 2;
-            bgPrimary = lerpColor('#0f0a1a', '#2a1f35', t);
-            bgSecondary = lerpColor('#15101f', '#3d2a4a', t);
-            skyGradient = `linear-gradient(180deg, 
-                ${lerpColor('#1a1025', '#4a3060', t)} 0%, 
-                ${lerpColor('#2d1530', '#ff9966', t)} 50%,
-                ${lerpColor('#401a35', '#ffcc80', t)} 100%)`;
-            grassTint = lerpColor('#1a2815', '#2a4020', t);
+            groundGradient = `radial-gradient(ellipse at center, 
+                ${lerpColor('#1a2010', '#2a3518', t)} 0%, 
+                ${lerpColor('#0f1508', '#1f2812', t)} 50%,
+                ${lerpColor('#080a05', '#151a0d', t)} 100%)`;
         } else if (timeValue >= 7 && timeValue < 10) {
-            // Morning - warming up
+            // Morning - brightening grass
             const t = (timeValue - 7) / 3;
-            bgPrimary = lerpColor('#2a1f35', '#1a3045', t);
-            bgSecondary = lerpColor('#3d2a4a', '#254055', t);
-            skyGradient = `linear-gradient(180deg, 
-                ${lerpColor('#4a3060', '#87CEEB', t)} 0%, 
-                ${lerpColor('#ff9966', '#b4d7e8', t)} 50%,
-                ${lerpColor('#ffcc80', '#e8f4fc', t)} 100%)`;
-            grassTint = lerpColor('#2a4020', '#3a5a30', t);
+            groundGradient = `radial-gradient(ellipse at center, 
+                ${lerpColor('#2a3518', '#3a4a28', t)} 0%, 
+                ${lerpColor('#1f2812', '#2a3a1c', t)} 50%,
+                ${lerpColor('#151a0d', '#1a2510', t)} 100%)`;
         } else if (timeValue >= 10 && timeValue < 16) {
-            // Midday - bright and vibrant
-            const t = (timeValue - 10) / 6;
-            bgPrimary = '#1a3550';
-            bgSecondary = '#254560';
-            skyGradient = `linear-gradient(180deg, 
-                #4a90c2 0%, 
-                #87CEEB 30%,
-                #b4e4fc 60%,
-                #e8f8ff 100%)`;
-            grassTint = '#4a7a40';
+            // Midday - brightest grass, full daylight
+            groundGradient = `radial-gradient(ellipse at center, 
+                #3d5030 0%, 
+                #2d4020 40%,
+                #1f3015 70%,
+                #152510 100%)`;
         } else if (timeValue >= 16 && timeValue < 18) {
-            // Afternoon - golden hour starting
+            // Afternoon - golden hour, warm tones on grass
             const t = (timeValue - 16) / 2;
-            bgPrimary = lerpColor('#1a3550', '#2d2a40', t);
-            bgSecondary = lerpColor('#254560', '#3f354a', t);
-            skyGradient = `linear-gradient(180deg, 
-                ${lerpColor('#4a90c2', '#6b7aa0', t)} 0%, 
-                ${lerpColor('#87CEEB', '#f0a060', t)} 50%,
-                ${lerpColor('#e8f8ff', '#ffcc66', t)} 100%)`;
-            grassTint = lerpColor('#4a7a40', '#4a6a35', t);
+            groundGradient = `radial-gradient(ellipse at center, 
+                ${lerpColor('#3d5030', '#3a4525', t)} 0%, 
+                ${lerpColor('#2d4020', '#2a351a', t)} 50%,
+                ${lerpColor('#152510', '#18200d', t)} 100%)`;
         } else if (timeValue >= 18 && timeValue < 20) {
-            // Sunset - dramatic oranges and purples
+            // Sunset - dimming light on grass
             const t = (timeValue - 18) / 2;
-            bgPrimary = lerpColor('#2d2a40', '#201530', t);
-            bgSecondary = lerpColor('#3f354a', '#2a1a3a', t);
-            skyGradient = `linear-gradient(180deg, 
-                ${lerpColor('#6b7aa0', '#2d1f50', t)} 0%, 
-                ${lerpColor('#f0a060', '#cc4499', t)} 35%,
-                ${lerpColor('#ffcc66', '#ff6633', t)} 60%,
-                ${lerpColor('#ffcc66', '#ffaa44', t)} 100%)`;
-            grassTint = lerpColor('#4a6a35', '#354a2a', t);
+            groundGradient = `radial-gradient(ellipse at center, 
+                ${lerpColor('#3a4525', '#2a3018', t)} 0%, 
+                ${lerpColor('#2a351a', '#1f2512', t)} 50%,
+                ${lerpColor('#18200d', '#121808', t)} 100%)`;
         } else if (timeValue >= 20 && timeValue < 21) {
-            // Dusk - transitioning to night
+            // Dusk - fading light
             const t = (timeValue - 20);
-            bgPrimary = lerpColor('#201530', '#0a0a15', t);
-            bgSecondary = lerpColor('#2a1a3a', '#10101f', t);
-            skyGradient = `linear-gradient(180deg, 
-                ${lerpColor('#2d1f50', '#0a0a1a', t)} 0%, 
-                ${lerpColor('#cc4499', '#1a1030', t)} 50%,
-                ${lerpColor('#ff6633', '#2a1540', t)} 100%)`;
-            grassTint = lerpColor('#354a2a', '#1a2815', t);
+            groundGradient = `radial-gradient(ellipse at center, 
+                ${lerpColor('#2a3018', '#1a2010', t)} 0%, 
+                ${lerpColor('#1f2512', '#12180a', t)} 50%,
+                ${lerpColor('#121808', '#0a0d05', t)} 100%)`;
         } else {
-            // Night - deep blues and purples
-            bgPrimary = '#0a0a15';
-            bgSecondary = '#10101f';
-            skyGradient = `linear-gradient(180deg, 
-                #05050f 0%, 
-                #0a0a1a 50%,
-                #151525 100%)`;
-            grassTint = '#1a2815';
+            // Night - dark grass
+            groundGradient = `radial-gradient(ellipse at center, 
+                #151a12 0%, 
+                #0f1208 40%,
+                #080a05 70%,
+                #050705 100%)`;
         }
 
-        return { bgPrimary, bgSecondary, skyGradient, grassTint };
+        return { groundGradient };
     }
 
     function lerpColor(color1, color2, t) {
@@ -152,28 +124,21 @@ function initTimeOfDayBackground() {
     function applyTimeOfDayBackground() {
         const colors = getTimeOfDayColors();
 
-        // Apply background colors to the body
-        document.documentElement.style.setProperty('--color-bg-primary', colors.bgPrimary);
-        document.documentElement.style.setProperty('--color-bg-secondary', colors.bgSecondary);
-
-        // Create or update sky overlay
-        let skyOverlay = document.getElementById('sky-overlay');
-        if (!skyOverlay) {
-            skyOverlay = document.createElement('div');
-            skyOverlay.id = 'sky-overlay';
-            skyOverlay.style.cssText = `
+        // Create or update ground overlay
+        let groundOverlay = document.getElementById('ground-overlay');
+        if (!groundOverlay) {
+            groundOverlay = document.createElement('div');
+            groundOverlay.id = 'ground-overlay';
+            groundOverlay.style.cssText = `
                 position: fixed;
                 inset: 0;
                 z-index: -2;
                 pointer-events: none;
                 transition: background 60s linear;
             `;
-            document.body.insertBefore(skyOverlay, document.body.firstChild);
+            document.body.insertBefore(groundOverlay, document.body.firstChild);
         }
-        skyOverlay.style.background = colors.skyGradient;
-
-        // Store grass tint for the grass effect to use
-        window.grassTint = colors.grassTint;
+        groundOverlay.style.background = colors.groundGradient;
     }
 
     // Apply immediately
