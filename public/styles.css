@@ -663,14 +663,34 @@ a {
    More Links Button
    =================================== */
 .more-links-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: var(--color-text-muted);
-    font-size: 0.85rem;
-    transition: color 0.25s ease;
+    font-size: 0.8rem;
+    padding: 8px 14px;
+    background: rgba(61, 122, 55, 0.1);
+    border: 2px solid rgba(61, 122, 55, 0.3);
+    border-radius: 4px;
+    font-family: 'Inter', monospace;
+    letter-spacing: 0.5px;
+    transition: var(--transition-base);
+    text-transform: uppercase;
 }
 
 .more-links-btn:hover {
-    color: var(--color-accent-primary);
-}/* ===================================
+    color: #4d9a47;
+    background: rgba(61, 122, 55, 0.2);
+    border-color: rgba(77, 154, 71, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(61, 122, 55, 0.2);
+}
+
+.more-links-btn .pixel-icon {
+    font-size: 0.9rem;
+}
+
+/* ===================================
    Projects Modal
    =================================== */
 .modal-overlay {
