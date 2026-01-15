@@ -3,9 +3,9 @@
   "contact": {
     "address_line1": "13593 S 600 W",
     "address_line2": "Draper, UT 84020",
-    "details": "Phone: 805-705-2840    Email: m_ozten@yahoo.com    GitHub: https://github.com/netzo92"
+    "details": "Phone: 805-705-2840 | Email: m_ozten@yahoo.com | GitHub: https://github.com/netzo92"
   },
-  "summary": "Passionate software engineer with expertise in full-stack development, cloud technologies, and decentralized applications. Proven track record of delivering high-quality solutions that drive business value.",
+  "summary": "Senior Software Engineer with 8+ years of experience across fintech, distributed systems, embedded systems, and cloud platforms. Strong background in Python, Java, Go, C, and C++, with hands-on experience building high-throughput transaction systems, real-time APIs, serverless backends, Kubernetes-deployed services, and production-grade observability. Experienced using modern AI-assisted development tools to accelerate design, implementation, and debugging workflows.",
   "education": [
     {
       "institution": "University of California, Santa Barbara, College of Engineering",
@@ -26,67 +26,139 @@
   ],
   "experience": [
     {
-      "role": "Software Engineer",
-      "company": "Oracle",
-      "dates": "TODO: Add dates",
+      "role": "Senior Software Engineer",
+      "company": "Mastercard",
+      "dates": "Jan 2022 – Present",
       "bullets": [
-        "TODO: Add description of role and achievements",
-        "TODO: Add specific technologies used"
+        "Architected and implemented an identity-matching service integrating Mastercard systems with Plaid Identity APIs using Python, FastAPI, Pydantic, and MySQL and MariaDB.",
+        "Implemented two high-throughput Go microservices. One service handled low-latency storage and querying of enriched transaction data. The other service handled active transaction categorization and data-enrichment processing.",
+        "Built a scalable persistence-layer microservice for the Open Banking Consent Platform using Java, Spring Boot, Spring MVC, and Spring Data.",
+        "Implemented Redis caching and PostgreSQL storage to support low-latency, high-volume transaction workloads.",
+        "Containerized and deployed services using Docker and Kubernetes.",
+        "Owned feature-level deployments for my microservices to production, coordinating releases with product, SRE, and cloud operations teams.",
+        "Implemented service monitoring, logging, and alerting using Splunk, SignalFx, and Dynatrace.",
+        "Built local development environments using Docker Compose and LocalStack, implementing localized versions of dependent services through containerization or lightweight mocks."
       ]
     },
     {
       "role": "Software Engineer",
-      "company": "L-3 Communications",
-      "dates": "TODO: Add dates",
+      "company": "Finicity (A Mastercard Company)",
+      "dates": "May 2021 – Jan 2022",
       "bullets": [
-        "TODO: Add description of role and achievements",
-        "TODO: Add specific technologies used"
+        "Built scalable record storage and retrieval services in Java using SQL and Redis.",
+        "Implemented the FinID microservice from scratch in Go backed by PostgreSQL.",
+        "Deployed production services via Kubernetes using GitLab CI and CD pipelines.",
+        "Developed systems to issue, deduplicate, store, and retrieve financial identifiers for businesses and economic agents."
       ]
     },
     {
       "role": "Software Engineer",
-      "company": "Department of Energy",
-      "dates": "TODO: Add dates",
+      "company": "Nexa3D",
+      "dates": "Aug 2019 – May 2021",
       "bullets": [
-        "TODO: Add description of role and achievements",
-        "TODO: Add specific technologies used"
+        "Architected and developed the onboard server application for the NXE400 industrial 3D printer using Python and Flask.",
+        "Built cloud-based printer monitoring and telemetry pipelines using AWS Lambda functions and MySQL to collect, store, and query device health and operational data.",
+        "Developed embedded actuator and sensor controller firmware in C.",
+        "Designed and implemented USB protocols and device drivers for printer peripherals.",
+        "Built desktop and touchscreen user interfaces for remote operation and monitoring using Qt with Python and C++.",
+        "As the first full-time software engineer, selected hardware components and architected the initial multi-computer software platform for a 60k dollar industrial printer."
+      ]
+    },
+    {
+      "role": "Computer Engineer",
+      "company": "Electro-Optical Industries",
+      "dates": "Sep 2017 – Aug 2019",
+      "bullets": [
+        "Developed embedded firmware on bare-metal SoCs and RTOS platforms.",
+        "Managed company-wide application and firmware source control.",
+        "Designed and implemented a building security system using single-board computers, motion detectors, and door sensors.",
+        "Developed user-facing measurement and testing applications in Python and C#."
+      ]
+    },
+    {
+      "role": "Embedded Engineer (Contract)",
+      "company": "U.S. Department of Energy, Special Technologies Laboratory",
+      "dates": "Jun 2015 – Aug 2017",
+      "bullets": [
+        "Developed interfaces for sensors and peripherals and integrated them into GUI applications using Tcl and Tk.",
+        "Built embedded systems for portable sensor devices including user interface and display control.",
+        "Led design and development of a sensor test fixture exceeding 200k dollars used for hardware verification."
+      ]
+    },
+    {
+      "role": "Software Development Intern",
+      "company": "Oracle, ZFS Team",
+      "dates": "Jun 2016 – Sep 2016",
+      "bullets": [
+        "Developed internal tooling for the ZFS engineering team.",
+        "Implemented a disk usage estimation tool modeling storage requirements across ZFS configurations.",
+        "Worked under regular senior engineer code review adhering to Oracle Python standards."
+      ]
+    },
+    {
+      "role": "Electrical Engineering Intern",
+      "company": "L3 Technologies Maripro",
+      "dates": "Summer 2013, Summer 2014, Fall 2014",
+      "bullets": [
+        "Developed a UDP-based networking test client in Python with a Tcl and Tk GUI.",
+        "Drafted operations and maintenance documentation for client-facing range control applications.",
+        "Designed analog IO boards using OrCAD Capture and PCB Editor.",
+        "Implemented Verilog modules and self-verifying test benches."
       ]
     }
   ],
   "projects": [
     {
-      "title": "boxbazaar.io",
-      "url": "https://boxbazaar.io",
-      "bullets": [
-        "Developed a decentralized marketplace platform.",
-        "Implemented secure transaction handling and user authentication."
-      ],
-      "in_progress": []
-    },
-    {
-      "title": "zcashprice.now",
+      "title": "ZEC Price, Real-Time Zcash Analytics Dashboard",
       "url": "https://zcashprice.now",
       "bullets": [
-        "Built a real-time Zcash price tracker with live updates.",
-        "Integrated cryptocurrency APIs for accurate market data."
+        "Built a real-time cryptocurrency dashboard for Zcash featuring live price streaming, analytics, and interactive visualizations.",
+        "Implemented WebSocket-based live price streaming with event-driven updates.",
+        "Aggregated market data from CoinMarketCap, CoinGecko, and Binance using REST APIs.",
+        "Built interactive Chart.js visualizations with timeframe filtering and responsive behavior.",
+        "Developed a serverless API proxy layer using Node.js and Netlify Functions.",
+        "Optimized performance using LocalStorage caching and lazy loading.",
+        "Implemented Solana wallet connectivity using Phantom and Solflare.",
+        "Deployed as a static single page application using Netlify CI and CD, GitHub Actions pipelines, and custom domain hosting."
+      ],
+      "in_progress": [
+        "DFlow API integration for Kalshi prediction market functionality on Solana."
+      ]
+    },
+    {
+      "title": "BoxBazaar.io, Web3 Collectibles Exchange",
+      "url": "https://boxbazaar.io",
+      "bullets": [
+        "Built a Web3-based collectibles exchange focused on trading cards and sealed product markets.",
+        "Implemented marketplace workflows for listings, pricing ingestion, and user interactions.",
+        "Integrated Web3 wallet-based authentication and ownership verification.",
+        "Automated build and deployment workflows using GitHub Actions pipelines.",
+        "Designed the platform for extensibility, analytics, and future exchange features."
       ],
       "in_progress": []
     }
   ],
   "skills": {
-    "Languages": "Python, JavaScript, TypeScript, Go, SQL, Solidity",
-    "Frameworks": "React, Node.js, Django, FastAPI, Next.js",
-    "Tools": "Docker, Kubernetes, AWS, PostgreSQL, Redis, Git, Zcash"
+    "Languages": "Python, Java, Go, C, C++, SQL, Perl, Verilog",
+    "Frameworks and Tools": "FastAPI, Spring Boot, Flask, Docker, Kubernetes, GitLab CI and CD, GitHub Actions",
+    "Cloud and Serverless": "AWS Lambda, Netlify Functions",
+    "Datastores": "PostgreSQL, MySQL and MariaDB, Redis, Amazon RDS",
+    "Observability": "Splunk, SignalFx, Dynatrace",
+    "AI Assisted Development": "Claude Code, Antigravity",
+    "Libraries": "NumPy, SciPy, Scikit-Learn, TensorFlow, Keras, PyTorch"
   },
   "distinctions": [
-    "Dean's List 2014-2015",
-    "Best Hackathon Project 2018"
+    "Tau Beta Pi Engineering Honors Society",
+    "Triplebyte Certified Generalist Software Engineer",
+    "LeetCode Contest Rating 1531",
+    "Published author, SPIE Infrared Imaging Systems Conference, 2018"
   ],
   "leadership": [
-    "President of Computer Science Club (2014-2015)",
-    "Led student workshop on Introduction to Python"
+    "Vice President of Engineering, Alphamine.io, 2016 to 2020",
+    "Tau Beta Pi Tutor",
+    "UCSB ACM Member"
   ],
   "publications": [
-    "M. Ozten et al., \"Decentralized ledgers in modern finance\", IEEE 2018"
+    "Scopatz, Stephen; Ozten, Metehan; Aubry, Gilles; Arquetoux, Guillaume. \"Automated spot defect characterization in a field portable night vision goggle test set.\" Proceedings of SPIE 10625, Infrared Imaging Systems, 2018."
   ]
 }
