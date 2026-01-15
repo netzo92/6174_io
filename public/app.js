@@ -514,7 +514,7 @@ function initMMOChatPopup() {
         <div class="chat-body">
             <p class="chat-message">Hello! Would you like to download a copy of my resume?</p>
             <div class="chat-actions">
-                <a href="resume.pdf" class="chat-btn chat-accept" download>Download Resume 📥</a>
+                <a href="Metehan_Ozten_Resume.docx" class="chat-btn chat-accept" download>Download Resume 📥</a>
                 <button class="chat-btn chat-decline">Not Now</button>
             </div>
         </div>
